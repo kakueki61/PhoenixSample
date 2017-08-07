@@ -1,5 +1,6 @@
 defmodule SimpleAuth.Post do
   use Ecto.Schema
+  import Ecto.Changeset
   @moduledoc false
 
   schema "posts" do

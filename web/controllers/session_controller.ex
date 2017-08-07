@@ -2,7 +2,7 @@ defmodule SimpleAuth.SessionController do
   @moduledoc false
   use SimpleAuth.Web, :controller
 
-  plug :scrub_params, "session" when actoin in ~w(create)a
+  plug :scrub_params, "session" when action in ~w(create)a
 
   def new(conn, _) do
     render conn, "new.html"

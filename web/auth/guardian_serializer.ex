@@ -1,6 +1,6 @@
 defmodule SimpleAuth.GuardianSerializer do
   @moduledoc false
-  @behavior Guardian.Serializer
+  @behaviour Guardian.Serializer
 
   alias SimpleAuth.Repo
   alias SimpleAuth.User

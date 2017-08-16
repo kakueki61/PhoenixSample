@@ -49,7 +49,13 @@ defmodule SimpleAuth.SessionController do
   end
 
   def delete(conn, _) do
-    # here will be an implementation
+    conn
+    |> logout
+    |> put_flash(:info, "See your later!")
+    |> redirect(to: page_path(conn, :index))
   end
-  
+
+  defp logout(conn) do
+    Guardian.Plug.sign_out(conn)
+  end
 end

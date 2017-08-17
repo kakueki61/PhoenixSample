@@ -11,11 +11,24 @@ defmodule SimpleAuth.PostController do
     apply(__MODULE__, action_name(conn), [conn, conn.params, conn,assigns.current_user])
   end
 
-  def index(conn, _params, current_user) do
-    # here will be an implementation
+  def index(conn, %{"user_id" => user_id}, current_user) do
+    user = User |> Repo.get!(user_id)
+
+    posts =
+      user
+      |> user_posts
+      |> Repo.all
+      |> Repo.preload(:user)
+
+    render(conn, "index.html", posts: posts, user: user)
   end
 
-  def show(conn, %{"id" => id}, current_user) do
+  def show(conn, %{"user_id" => user_id, "id" => id}, _current_user) do
+    user = User |> Repo.get!(user_id)
+
+    post = user |> user_post_by_id(id) |> Repo.preload(:user)
+
+    render(conn, "show.html", post: post, user: user)
   end
 
   def new(conn, _params, current_user) do

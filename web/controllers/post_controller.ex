@@ -8,7 +8,7 @@ defmodule SimpleAuth.PostController do
   plug :scrub_params, "post" when action in [:create, :update]
 
   def action(conn, _) do
-    apply(__MODULE__, action_name(conn), [conn, conn.params, conn,assigns.current_user])
+    apply(__MODULE__, action_name(conn), [conn, conn.params, conn.assigns.current_user])
   end
 
   def index(conn, %{"user_id" => user_id}, current_user) do
@@ -41,6 +41,19 @@ defmodule SimpleAuth.PostController do
   end
 
   def create(conn, %{"post" => post_params}, current_user) do
+    changeset =
+      current_user
+      |> build_assoc(:posts)
+      |> Post.changeset(post_params)
+
+    case Repo.insert(changeset) do
+      {:ok, _} ->
+        conn
+        |> put_flash(:info, "Post was created successfully")
+        |> redirect(to: user_post_path(conn, :index, current_user.id))
+      {:error, changeset} ->
+        render(conn, "new.html", changeset)
+    end
   end
 
   def edit(conn, %{"id" => id}, current_user) do

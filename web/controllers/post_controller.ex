@@ -61,9 +61,15 @@ defmodule SimpleAuth.PostController do
   def edit(conn, %{"id" => id}, current_user) do
     post = current_user |> user_post_by_id(id)
 
-    changeset = Post.changeset(post)
+    if post do
+      changeset = Post.changeset(post)
 
-    render(conn, "edit.html", post: post, changeset: changeset)
+      render(conn, "edit.html", post: post, changeset: changeset)
+    else
+      conn
+      |> put_status(:not_found)
+      |> render(SimpleAuth.ErrorView, "404.html")
+    end
   end
 
   def update(conn, %{"id" => id, "post" => post_params}, current_user) do

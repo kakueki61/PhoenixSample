@@ -9,5 +9,10 @@ defmodule SimpleAuth.Admin.UserController do
 
     render(conn, :index, users: users)
   end
-  
+
+  def show(conn, %{"id" => id}) do
+    user = User |> Repo.get!(id)
+
+    render(conn, :show, user: user)
+  end
 end

@@ -8,6 +8,8 @@ defmodule SimpleAuth.Post do
 
     field :title, :string
     field :body, :string
+
+    timestamps
   end
 
   @required_fields ~w(title)a

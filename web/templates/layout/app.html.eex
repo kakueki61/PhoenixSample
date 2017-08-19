@@ -15,15 +15,19 @@
     <div class="container">
       <header class="header">
         <nav role="navigation">
-          <ul class="nav nav-pills pull-right">
+          <ol class="breadcrumb text-right">
             <%= if @current_user do %>
                 <li><%= @current_user.email %> (<%= @current_user.id %>)</li>
+                <li><%= link "My posts", to: user_post_path(@conn, :index, @current_user) %></li>
+                <%= if @current_user.is_admin do %>
+                  <li><%= link "Users", to: admin_user_path(@conn, :index) %></li>
+                <% end %>
                 <li><%= link "Sign out", to: session_path(@conn, :delete, @current_user), method: "delete" %></li>
             <% else %>
                 <li><%= link "Register", to: user_path(@conn, :new) %></li>
                 <li><%= link "Sign in", to: session_path(@conn, :new) %></li>
             <% end %>
-          </ul>
+          </ol>
         </nav>
         <span class="logo"></span>
       </header>

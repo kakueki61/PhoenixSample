@@ -57,9 +57,26 @@ defmodule SimpleAuth.PostController do
   end
 
   def edit(conn, %{"id" => id}, current_user) do
+    post = current_user |> user_post_by_id(id)
+
+    changeset = Post.changeset(post)
+
+    render(conn, "edit.html", post: post, changeset: changeset)
   end
 
   def update(conn, %{"id" => id, "post" => post_params}, current_user) do
+    post = current_user |> user_post_by_id(id)
+
+    changeset = Post.changeset(post, post_params)
+
+    case Repo.update(changeset) do
+      {:ok, _} ->
+        conn
+        |> put_flash(:info, "Post was updated successfully")
+        |> redirect(to: user_post_path(conn, :show, current_user.id, post.id))
+      {:error, changeset} ->
+        render(conn, "edit.html", post: post, changeset: changeset)
+    end
   end
 
   def delete(conn, %{"id" => id}, current_user) do
@@ -75,14 +92,4 @@ defmodule SimpleAuth.PostController do
     |> Repo.get(post_id)
   end
 
-#/users/:id                       SimpleAuth.UserController :show
-#/users/:user_id/posts            SimpleAuth.PostController :index
-#/users/:user_id/posts/:id/edit   SimpleAuth.PostController :edit
-#/users/:user_id/posts/new        SimpleAuth.PostController :new
-#/users/:user_id/posts/:id        SimpleAuth.PostController :show
-#/users/:user_id/posts            SimpleAuth.PostController :create
-#/users/:user_id/posts/:id        SimpleAuth.PostController :update
-#/users/:user_id/posts/:id        SimpleAuth.PostController :update
-#/users/:user_id/posts/:id        SimpleAuth.PostController :delete
-  
 end

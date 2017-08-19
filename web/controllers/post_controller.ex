@@ -2,6 +2,8 @@ defmodule SimpleAuth.PostController do
   @moduledoc false
   use SimpleAuth.Web, :controller
 
+  require Logger
+
   alias SimpleAuth.Post
   alias SimpleAuth.User
 
@@ -80,6 +82,11 @@ defmodule SimpleAuth.PostController do
   end
 
   def delete(conn, %{"id" => id}, current_user) do
+    current_user |> user_post_by_id(id) |> Repo.delete!
+
+    conn
+    |> put_flash(:info, "Post was deleted successfully")
+    |> redirect(to: user_post_path(conn, :index, current_user.id))
   end
 
   defp user_posts(user) do

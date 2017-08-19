@@ -32,6 +32,12 @@ defmodule SimpleAuth.PostController do
   end
 
   def new(conn, _params, current_user) do
+    changeset =
+      current_user
+      |> build_assoc(:posts)
+      |> Post.changeset
+
+    render(conn, "new.html", changeset: changeset)
   end
 
   def create(conn, %{"post" => post_params}, current_user) do
